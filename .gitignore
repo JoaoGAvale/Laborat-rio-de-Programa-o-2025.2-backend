@@ -1,0 +1,12 @@
+.vscode/
+.venv*/
+venv*/
+__pycache__/
+TODO.md
+__init__.cpython-313.pyc
+app/controllers/__pycache__/__init__.cpython-313.pyc
+logs
+migrations*/
+logs*/
+resultado_teste.txt
+uploads/
