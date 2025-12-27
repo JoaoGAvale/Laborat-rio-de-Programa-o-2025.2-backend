@@ -2,6 +2,8 @@
 .venv*/
 venv*/
 __pycache__/
+.env
+.env.*
 TODO.md
 __init__.cpython-313.pyc
 app/controllers/__pycache__/__init__.cpython-313.pyc
