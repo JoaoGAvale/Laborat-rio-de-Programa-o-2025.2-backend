@@ -31,7 +31,40 @@ class Doacao(base_model.Base):
     confirmacao_entrega: Mapped[Optional[bool]] = mapped_column(Boolean)
     confirmacao_recebimento: Mapped[Optional[bool]] = mapped_column(Boolean)
 
-    doador: Mapped[Optional['Usuario']] = relationship('Usuario', foreign_keys=[doador_id], back_populates='Doacao')
-    endereco: Mapped[Optional['Endereco']] = relationship('Endereco', back_populates='Doacao')
-    receptor: Mapped[Optional['Usuario']] = relationship('Usuario', foreign_keys=[receptor_id], back_populates='Doacao_')
-    unidade: Mapped[Optional['UnidadeMedida']] = relationship('UnidadeMedida', back_populates='Doacao')
+    doador: Mapped[Optional['Usuario']] = relationship('Usuario', foreign_keys=[doador_id])
+    endereco: Mapped[Optional['Endereco']] = relationship('Endereco')
+    receptor: Mapped[Optional['Usuario']] = relationship('Usuario', foreign_keys=[receptor_id])
+    unidade: Mapped[Optional['UnidadeMedida']] = relationship('UnidadeMedida')
+
+    def __init__(self, doador_id = None, receptor_id = None, descricao = None, quantidade = None, unidade_id = None, validade = None, endereco_id = None, status = None):
+        self.doador_id = doador_id
+        self.receptor_id = receptor_id
+        self.descricao = descricao
+        self.quantidade = quantidade
+        self.unidade_id = unidade_id
+        self.validade = validade
+        self.endereco_id = endereco_id
+        self.status = status
+        self.data_cadastro = datetime.datetime.now()
+        self.confirmacao_entrega = False
+        self.confirmacao_recebimento = False
+
+    def __repr__(self):
+        return f"<Doacao {self.id_doacao} - {self.descricao}>"
+
+    def to_dict(self):
+        return {
+            "id_doacao":self.id_doacao,
+            "doador_id":self.doador_id,
+            "doador_id":self.doador_id,
+            "receptor_id":self.receptor_id,
+            "descricao":self.descricao,
+            "quantidade":self.quantidade,
+            "unidade_id":self.unidade_id,
+            "validade":self.validade,
+            "endereco_id":self.endereco_id,
+            "status":self.status,
+            "data_cadastro":self.data_cadastro,
+            "confirmacao_entrega":self.confirmacao_entrega,
+            "confirmacao_recebimento":self.confirmacao_recebimento
+        }

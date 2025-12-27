@@ -18,3 +18,17 @@ class Cidade(base_model.Base):
 
     estado: Mapped[Optional['Estado']] = relationship('Estado')
     #Endereco: Mapped[list['Endereco']] = relationship('Endereco', back_populates='cidade')
+
+    def __init__(self, nome, estado_id = None):
+        self.nome = nome
+        self.estado_id = estado_id
+
+    def __repr__(self):
+        return f"<Cidade {self.id_cidade} - {self.nome}>"
+
+    def to_dict(self):
+        return {
+            "id_cidade": self.id_cidade,
+            "nome": self.nome,
+            "estado_id": self.estado_id,
+        }

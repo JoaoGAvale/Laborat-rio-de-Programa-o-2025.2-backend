@@ -1,6 +1,6 @@
 from app import db
-from app.models.cidade_model import Cidade
+from app.models.usuario_model import Usuario
 
-novo = Cidade(nome="Models Separados",estado_id = 1)
+novo = Usuario(nome="Testando",cnpj="123123123",perfil="Receptor")
 db.session.add(novo)
 db.session.commit()

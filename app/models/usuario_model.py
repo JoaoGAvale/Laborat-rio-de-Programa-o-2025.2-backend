@@ -20,8 +20,31 @@ class Usuario(base_model.Base):
     nome: Mapped[Optional[str]] = mapped_column(Text)
     endereco_id: Mapped[Optional[int]] = mapped_column(BigInteger)
     perfil: Mapped[Optional[str]] = mapped_column(Enum('Doador', 'Receptor', 'Admin', name='Perfil'))
+    email: Mapped[Optional[str]] = mapped_column(Text)
 
-    endereco: Mapped[Optional['Endereco']] = relationship('Endereco', back_populates='Usuario')
+    endereco: Mapped[Optional['Endereco']] = relationship('Endereco')
     #Doacao: Mapped[list['Doacao']] = relationship('Doacao', foreign_keys='[Doacao.doador_id]', back_populates='doador')
     #Doacao_: Mapped[list['Doacao']] = relationship('Doacao', foreign_keys='[Doacao.receptor_id]', back_populates='receptor')
     #Notificacao: Mapped[list['Notificacao']] = relationship('Notificacao', back_populates='usuario')
+
+    def __init__(self, nome = None, cnpj = None, endereco_id = None, perfil=None, email = None):
+        self.nome = nome
+        self.cnpj = cnpj
+        self.endereco_id = endereco_id
+        self.perfil = perfil
+        self.data_cadastro = datetime.datetime.now()
+        self.email = email
+
+    def __repr__(self):
+        return f"<Usuario {self.id_usuario} - {self.nome}>"
+
+    def to_dict(self):
+        return {
+            "id_usuario":self.id_usuario,
+            "nome":self.nome,
+            "cnpj": self.cnpj,
+            "endereco_id":self.endereco_id,
+            "perfil":self.perfil,
+            "data_cadastro":self.data_cadastro,
+            "email":self.email
+        }

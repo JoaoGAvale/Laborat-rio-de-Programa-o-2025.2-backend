@@ -16,3 +16,17 @@ class Estado(base_model.Base):
     sigla: Mapped[Optional[str]] = mapped_column(Text)
 
     #Cidade: Mapped[list['Cidade']] = relationship('Cidade', back_populates='estado')
+
+    def __init__(self, nome = None, sigla=None):
+            self.nome = nome
+            self.sigla = sigla
+
+    def __repr__(self):
+        return f"<Estado {self.id_estado} - {self.nome}>"
+
+    def to_dict(self):
+        return {
+            "id_estado": self.id_estado,
+            "nome": self.nome,
+            "sigla": self.sigla,
+        }

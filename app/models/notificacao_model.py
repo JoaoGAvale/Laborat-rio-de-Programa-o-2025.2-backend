@@ -19,4 +19,22 @@ class Notificacao(base_model.Base):
     texto: Mapped[Optional[str]] = mapped_column(Text)
     usuario_id: Mapped[Optional[int]] = mapped_column(BigInteger)
 
-    usuario: Mapped[Optional['Usuario']] = relationship('Usuario', back_populates='Notificacao')
+    usuario: Mapped[Optional['Usuario']] = relationship('Usuario')
+
+    def __init__(self, texto = None, usuario_id = None):
+        self.data_cadastro = datetime.datetime.now()
+        self.condicao = "Nao lida"
+        self.usuario_id = usuario_id
+        self.texto = texto
+
+    def __repr__(self):
+        return f"<Notificacao {self.id_notificacao} - {self.texto}>"
+
+    def to_dict(self):
+        return {
+            "id_notificacao": self.id_notificacao,
+            "data_cadastro": self.data_cadastro,
+            "condicao":self.condicao,
+            "texto":self.texto,
+            "usuario_id":self.usuario_id
+        }

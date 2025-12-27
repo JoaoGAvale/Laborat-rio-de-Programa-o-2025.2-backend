@@ -13,3 +13,15 @@ class UnidadeMedida(base_model.Base):
     nome: Mapped[str] = mapped_column(Text, nullable=False)
 
     #Doacao: Mapped[list['Doacao']] = relationship('Doacao', back_populates='unidade')
+
+    def __init__(self, nome):
+        self.nome = nome
+
+    def __repr__(self):
+        return f"<UnidadeMedida {self.id_unidade} - {self.nome}>"
+
+    def to_dict(self):
+        return {
+            "id_unidade":self.id_unidade,
+            "nome": self.nome,
+        }

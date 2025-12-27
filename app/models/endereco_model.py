@@ -20,6 +20,28 @@ class Endereco(base_model.Base):
     cep: Mapped[Optional[str]] = mapped_column(Text)
     complemento: Mapped[Optional[str]] = mapped_column(Text)
 
-    cidade: Mapped[Optional['Cidade']] = relationship('Cidade', back_populates='Endereco')
+    cidade: Mapped[Optional['Cidade']] = relationship('Cidade')
     #Usuario: Mapped[list['Usuario']] = relationship('Usuario', back_populates='endereco')
     #Doacao: Mapped[list['Doacao']] = relationship('Doacao', back_populates='endereco')
+
+    def __init__(self, cidade_id = None, logradouro =None, numero=None, cep=None, complemento=None):
+        self.cidade_id = cidade_id,
+        self.logradouro = logradouro
+        self.numero = numero,
+        self.cep = cep,
+        self.complemento = complemento,
+        self.data_cadastro = datetime.datetime.now()
+
+    def __repr__(self):
+        return f"<Endereco {self.id_endereco} - {self.logradouro} - {self.numero} - {self.cep}>"
+
+    def to_dict(self):
+        return {
+            "id_endereco": self.id_endereco,
+            "logradouro":self.logradouro,
+            "cidade_id":self.cidade_id,
+            "numero":self.numero,
+            "cep":self.cep,
+            "complemento":self.complemento,
+            "data_cadastro":self.data_cadastro
+        }  

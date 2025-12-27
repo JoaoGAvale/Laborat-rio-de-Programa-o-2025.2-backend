@@ -1,3 +1,5 @@
+# Arquivo gerado pelo sqlacodegen
+
 from typing import Optional
 import datetime
 
