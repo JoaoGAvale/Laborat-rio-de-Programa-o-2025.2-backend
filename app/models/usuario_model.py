@@ -6,6 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models import base_model
 from app.models.endereco_model import Endereco
 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 class Usuario(base_model.Base):
     __tablename__ = 'Usuario'
     __table_args__ = (
@@ -21,6 +23,7 @@ class Usuario(base_model.Base):
     endereco_id: Mapped[Optional[int]] = mapped_column(BigInteger)
     perfil: Mapped[Optional[str]] = mapped_column(Enum('Doador', 'Receptor', 'Admin', name='Perfil'))
     email: Mapped[Optional[str]] = mapped_column(Text)
+    password_hash: Mapped[Optional[str]] = mapped_column(Text)
 
     endereco: Mapped[Optional['Endereco']] = relationship('Endereco')
     #Doacao: Mapped[list['Doacao']] = relationship('Doacao', foreign_keys='[Doacao.doador_id]', back_populates='doador')
@@ -46,5 +49,12 @@ class Usuario(base_model.Base):
             "endereco_id":self.endereco_id,
             "perfil":self.perfil,
             "data_cadastro":self.data_cadastro,
-            "email":self.email
+            "email":self.email,
+            "password_hash":self.password_hash
         }
+    
+    def set_password(self, password: str):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password: str) -> bool:
+        return check_password_hash(self.password_hash, password)
