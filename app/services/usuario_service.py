@@ -18,6 +18,9 @@ class UsuarioService(BaseService):
 
     def list(self, **filters):
         return self.manager.find_all(**filters)
+    
+    def get_usuario_by_email(self, email):
+        return self.manager.find_first_by(email = email)
 
     def update(self, _id, data: dict):
         obj = self.get_by_id(_id)

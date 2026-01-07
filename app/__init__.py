@@ -15,8 +15,10 @@ def create_app():
 
     db.init_app(app)
 
-    from app.endpoints.usuario_endpoint import bp_usuario
-    app.register_blueprint(bp_usuario)
+    from app.endpoints.usuario_endpoint import usuario_bp
+    from app.endpoints.login_endpoint import auth_bp
+    app.register_blueprint(usuario_bp)
+    app.register_blueprint(auth_bp)
 
     jwt.init_app(app)
 

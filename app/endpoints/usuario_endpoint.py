@@ -1,10 +1,10 @@
 from flask import Blueprint, request, jsonify
 from app.services.usuario_service import UsuarioService
 
-bp_usuario = Blueprint("usuario", __name__, url_prefix="/usuario")
+usuario_bp = Blueprint("usuario", __name__, url_prefix="/usuario")
 service = UsuarioService()
 
-@bp_usuario.route("/", methods=["POST"])
+@usuario_bp.route("/", methods=["POST"])
 def create_usuario():
     try:
         data = request.get_json()
@@ -14,7 +14,7 @@ def create_usuario():
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
 
-@bp_usuario.route("/<int:usuario_id>", methods=["GET"])
+@usuario_bp.route("/<int:usuario_id>", methods=["GET"])
 def get_usuario(usuario_id):
     try:
         usuario = service.get_by_id(usuario_id)
