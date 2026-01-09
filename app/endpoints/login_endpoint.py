@@ -1,8 +1,8 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, make_response
 from flask_jwt_extended import create_access_token
 from app.models.usuario_model import Usuario 
 from app.services.usuario_service import UsuarioService
-from app import db
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -24,12 +24,30 @@ def login():
     if not usuario or not usuario.check_password(password):
         return jsonify({"message": "Email ou senha incorretos"}), 401
 
-    token = create_access_token(identity=usuario.id_usuario)
+    access_token = create_access_token(identity=f"{usuario.id_usuario}")
 
-    return jsonify({
-        "access_token": token,
+    response = make_response(jsonify({
         "user": {
             "id": usuario.id_usuario,
             "email": usuario.email
         }
-    }), 200
+    }))
+
+    response.set_cookie("access_token_cookie", access_token, httponly=True)
+
+    return response
+
+@auth_bp.get("/me")
+@jwt_required()
+def me():
+    user_id = get_jwt_identity()
+    return {"id": user_id}
+
+@auth_bp.post("/logout")
+@jwt_required()
+def logout():
+    response = make_response(jsonify({"message": "Logout realizado"}))
+
+    response.delete_cookie("access_token_cookie")
+
+    return response, 200
