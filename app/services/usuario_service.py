@@ -43,3 +43,6 @@ class UsuarioService(BaseService):
         usuario = self.get_by_id(usuario_id)
         self.manager.delete(usuario)
         return True
+    
+    def get_usuario_by_email(self, email):
+        return self.manager.find_first_by(email = email)
