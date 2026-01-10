@@ -11,7 +11,6 @@ usuario_service = UsuarioService()
 @auth_bp.post("/login")
 def login():
     data = request.get_json() or {}
-
     email = data.get("email")
     password = data.get("password")
 
@@ -28,8 +27,11 @@ def login():
 
     response = make_response(jsonify({
         "user": {
-            "id": usuario.id_usuario,
-            "email": usuario.email
+            "id_usuario": usuario.id_usuario,
+            "email": usuario.email,
+            "nome": usuario.nome,
+            "perfil":usuario.perfil,
+            "cnpj":usuario.cnpj
         }
     }))
 
@@ -40,8 +42,9 @@ def login():
 @auth_bp.get("/me")
 @jwt_required()
 def me():
-    user_id = get_jwt_identity()
-    return {"id": user_id}
+    usuario_id_str = get_jwt_identity()
+    usuario_id = int(usuario_id_str)
+    return {"id_usuario": usuario_id}
 
 @auth_bp.post("/logout")
 @jwt_required()
