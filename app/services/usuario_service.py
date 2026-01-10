@@ -12,11 +12,9 @@ class UsuarioService(BaseService):
 
         password = data.pop("password")
 
-        usuario = self.manager.create(**data)
-        usuario.set_password(password)
+        # O manager desse servise é o UsuarioManager
+        usuario = self.manager.cadastrar_usuario(password,**data)
 
-        # precisa commitar de novo pq alterou o objeto após o create
-        self.manager.update(usuario)
         return usuario
 
     # READ por ID

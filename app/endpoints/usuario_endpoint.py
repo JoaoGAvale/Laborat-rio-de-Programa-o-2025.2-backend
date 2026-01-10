@@ -7,6 +7,9 @@ service = UsuarioService()
 # CREATE
 @usuario_bp.route("/", methods=["POST"])
 def create_usuario():
+    """
+    Os dados retornados do front devem ter os campos: nome, cnpj, perfil, email e password
+    """
     try:
         data = request.get_json()
         usuario = service.create(data)
