@@ -61,10 +61,12 @@ class Doacao(base_model.Base):
             "descricao":self.descricao,
             "quantidade":self.quantidade,
             "unidade_id":self.unidade_id,
+            "unidade": self.unidade.nome if self.unidade else "N/A",
             "validade":self.validade,
             "endereco_id":self.endereco_id,
             "status":self.status,
             "data_cadastro":self.data_cadastro,
+            "doador": self.doador.nome if self.doador else "Desconhecido",
             "confirmacao_entrega":self.confirmacao_entrega,
             "confirmacao_recebimento":self.confirmacao_recebimento
         }

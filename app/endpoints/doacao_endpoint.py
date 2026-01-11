@@ -48,3 +48,21 @@ def delete_doacao(doacao_id):
         return jsonify({"success": True})
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
+
+# HISTÓRICO por Usuário (Doador ou Receptor)
+@doacao_bp.route("/usuario/<int:user_id>", methods=["GET"])
+def get_history(user_id):
+    try:
+        status = request.args.get("status")
+        doacoes = service.get_user_history(user_id, status)      
+        return jsonify([d.to_dict() for d in doacoes]), 200
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
+    except Exception as e:
+        return jsonify({"error": "Erro interno no servidor"}), 500
+
+#Doações disponívels
+@doacao_bp.route("/disponiveis", methods=["GET"])
+def get_disponiveis():
+    doacoes = service.get_available_donations()
+    return jsonify([d.to_dict() for d in doacoes]), 200

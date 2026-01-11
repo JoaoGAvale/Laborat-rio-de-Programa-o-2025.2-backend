@@ -37,6 +37,6 @@ class NotificacaoService(BaseService):
         self.manager.delete(notificacao)
         return True
 
-    def get_all_notificacoes_by_usuario_id(self, usuario_id:int)->list[dict]:
+    def get_all_notificacoes_by_usuario_id(self, usuario_id:int):
         notificacoes = self.manager.find_all(usuario_id = usuario_id)
         return [n.to_dict() for n in notificacoes]
