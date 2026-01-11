@@ -45,7 +45,7 @@ def login():
             secure=False
             )
 
-        return response
+        return response, HTTPStatus.OK
     except Exception:
         return jsonify({"error": "Erro interno ao realizar login."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
