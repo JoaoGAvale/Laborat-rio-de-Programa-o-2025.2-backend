@@ -15,8 +15,8 @@ def create_app():
     CORS(
         app,
         supports_credentials=True,
-        origins=["http://localhost:3000"]
-        #origins=[os.getenv("ORIGINS")]
+        origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+        allow_headers=["Content-Type", "Authorization"] 
     )
   # habilita acesso do Next.js
 

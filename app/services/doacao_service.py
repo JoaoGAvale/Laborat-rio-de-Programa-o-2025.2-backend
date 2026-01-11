@@ -1,22 +1,39 @@
 from app.services.base_service import BaseService
 from app.managers.doacao_manager import DoacaoManager
 from app.managers.usuario_manager import UsuarioManager
+from app.managers.unidade_manager import UnidadeManager
 
 class DoacaoService(BaseService):
     def __init__(self):
         super().__init__(DoacaoManager())
+        self.unidade_manager = UnidadeManager()
     
     manager: DoacaoManager
     usuario_manager: UsuarioManager
 
-    # CREATE
     def create(self, data: dict):
-        # validações básicas, ex: descrição obrigatória
         if "descricao" not in data:
             raise ValueError("Descrição é obrigatória")
         if "doador_id" not in data:
             raise ValueError("Doador_id é obrigatório")
+
+        nome_unidade = data.get("unidade") 
         
+        if nome_unidade:
+            # Busca ignorando espaços extras
+            unidade_existente = self.unidade_manager.find_first_by(nome=nome_unidade.strip())
+            
+            if unidade_existente:
+                unidade_id = unidade_existente.id_unidade
+            else:
+                # Cria a nova unidade
+                nova_unidade = self.unidade_manager.create(nome=nome_unidade.strip())
+                # Após o refresh no manager, o id_unidade estará disponível aqui
+                unidade_id = nova_unidade.id_unidade
+            
+            data.pop("unidade", None)
+            data["unidade_id"] = unidade_id
+
         doacao = self.manager.create(**data)
         return doacao
 
