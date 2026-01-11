@@ -5,11 +5,13 @@ from sqlalchemy import BigInteger, DateTime, Enum, ForeignKeyConstraint, Identit
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.models import base_model
 from app.models.usuario_model import Usuario
+from app.models.doacao_model import Doacao
 
 class Notificacao(base_model.Base):
     __tablename__ = 'Notificacao'
     __table_args__ = (
         ForeignKeyConstraint(['usuario_id'], ['Usuario.id_usuario'], name='Notificacao_usuario_id_fkey'),
+        ForeignKeyConstraint(['doacao_id'], ['Doacao.id_doacao'], name='Notificacao_doacao_id_fkey'),
         PrimaryKeyConstraint('id_notificacao', name='Notificacao_pkey')
     )
 
@@ -18,13 +20,16 @@ class Notificacao(base_model.Base):
     condicao: Mapped[Optional[str]] = mapped_column(Enum('Lida', 'Nao lida', name='Condicao'))
     texto: Mapped[Optional[str]] = mapped_column(Text)
     usuario_id: Mapped[Optional[int]] = mapped_column(BigInteger)
+    doacao_id: Mapped[Optional[int]] = mapped_column(BigInteger)
 
     usuario: Mapped[Optional['Usuario']] = relationship('Usuario')
+    doacao: Mapped[Optional['Doacao']] = relationship('Doacao')
 
-    def __init__(self, texto = None, usuario_id = None):
+    def __init__(self, texto = None, usuario_id = None, doacao_id = None):
         self.data_cadastro = datetime.datetime.now()
         self.condicao = "Nao lida"
         self.usuario_id = usuario_id
+        self.doacao_id = doacao_id
         self.texto = texto
 
     def __repr__(self):
@@ -36,5 +41,6 @@ class Notificacao(base_model.Base):
             "data_cadastro": self.data_cadastro,
             "condicao":self.condicao,
             "texto":self.texto,
-            "usuario_id":self.usuario_id
+            "usuario_id":self.usuario_id,
+            "doacao_id":self.doacao_id
         }

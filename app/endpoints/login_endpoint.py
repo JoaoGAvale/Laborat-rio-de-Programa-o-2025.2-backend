@@ -3,6 +3,7 @@ from flask_jwt_extended import create_access_token
 from app.models.usuario_model import Usuario 
 from app.services.usuario_service import UsuarioService
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from http import HTTPStatus
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -16,13 +17,13 @@ def login():
         password = data.get("password",None)
 
         if not email or not password:
-            return jsonify({"message": "Credenciais inválidas"}), 400
+            return jsonify({"error": "Credenciais inválidas"}), HTTPStatus.INTERNAL_SERVER_ERROR
 
         usuario : Usuario= usuario_service.get_usuario_by_email(email=email)
 
         # resposta genérica para evitar brute-force inteligente
         if not usuario or not usuario.check_password(password):
-            return jsonify({"message": "Email ou senha incorretos"}), 401
+            return jsonify({"error": "Email ou senha incorretos"}), HTTPStatus.UNAUTHORIZED
 
         access_token = create_access_token(identity=f"{usuario.id_usuario}")
 
@@ -36,11 +37,17 @@ def login():
             }
         }))
 
-        response.set_cookie("access_token_cookie", access_token, httponly=True)
+        response.set_cookie(
+            "access_token_cookie", 
+            access_token, 
+            httponly=True,
+            samesite="Lax",
+            secure=False
+            )
 
         return response
     except Exception:
-        return jsonify({"message": "Erro interno ao realizar login."}), 400
+        return jsonify({"error": "Erro interno ao realizar login."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 @auth_bp.get("/me")
 @jwt_required()
@@ -48,9 +55,9 @@ def me():
     try:
         usuario_id_str = get_jwt_identity()
         usuario_id = int(usuario_id_str)
-        return {"id_usuario": usuario_id}, 200
+        return jsonify({"usuario_id": usuario_id}), HTTPStatus.OK
     except Exception:
-        return jsonify({"message": "Erro interno ao buscar usuário logado."}), 400
+        return jsonify({"error": "Erro interno ao buscar usuário logado."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 @auth_bp.post("/logout")
 @jwt_required()
@@ -60,6 +67,6 @@ def logout():
 
         response.delete_cookie("access_token_cookie")
 
-        return response, 200
+        return response, HTTPStatus.OK
     except Exception:
-        return jsonify({"message": "Erro interno ao realizar logout"}), 400
+        return jsonify({"error": "Erro interno ao realizar logout"}), HTTPStatus.INTERNAL_SERVER_ERROR
