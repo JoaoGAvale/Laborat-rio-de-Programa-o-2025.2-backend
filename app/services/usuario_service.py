@@ -7,6 +7,10 @@ class UsuarioService(BaseService):
 
     # CREATE (não tem id ainda)
     def create(self, data: dict):
+        email = data.get("email",None)
+        exist = self.manager.find_first_by(email = email)
+        if exist:
+            raise ValueError("Já existe um usuário com o email informado.")
         if "password" not in data:
             raise ValueError("Senha é obrigatória")
 
@@ -32,8 +36,22 @@ class UsuarioService(BaseService):
     def update(self, usuario_id: int, data: dict):
         usuario = self.get_by_id(usuario_id)
 
-        if "password" in data:
-            usuario.set_password(data.pop("password"))
+        CAMPOS_PERMITIDOS = {"nome", "cnpj", "email"}
+        for campo in data:
+            if campo not in CAMPOS_PERMITIDOS:
+                data.pop(campo)
+            elif not data.get(campo):
+                data.pop(campo)
+
+        email = data.get("email",None)
+        if email:
+            exist = self.manager.find_first_by(email = email)
+            if exist and exist.id_usuario != usuario_id:
+                raise ValueError("Já existe um usuário com o email informado.")
+
+        ### Sem mudar a senha por enquanto
+        # if "password" in data:
+        #     usuario.set_password(data.pop("password"))
 
         usuario = self.manager.update(usuario, **data)
         return usuario
