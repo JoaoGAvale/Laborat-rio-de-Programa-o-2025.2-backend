@@ -30,6 +30,7 @@ class Doacao(base_model.Base):
     status: Mapped[Optional[str]] = mapped_column(Enum('Disponivel', 'Reservada', 'Finalizada', name='Status'))
     confirmacao_entrega: Mapped[Optional[bool]] = mapped_column(Boolean)
     confirmacao_recebimento: Mapped[Optional[bool]] = mapped_column(Boolean)
+    data_entrega: Mapped[datetime.datetime] = mapped_column(DateTime(True), nullable=False)
 
     doador: Mapped[Optional['Usuario']] = relationship('Usuario', foreign_keys=[doador_id])
     endereco: Mapped[Optional['Endereco']] = relationship('Endereco')
@@ -68,5 +69,6 @@ class Doacao(base_model.Base):
             "data_cadastro":self.data_cadastro,
             "doador": self.doador.nome if self.doador else "Desconhecido",
             "confirmacao_entrega":self.confirmacao_entrega,
-            "confirmacao_recebimento":self.confirmacao_recebimento
+            "confirmacao_recebimento":self.confirmacao_recebimento,
+            "data_entrega":self.data_entrega
         }
