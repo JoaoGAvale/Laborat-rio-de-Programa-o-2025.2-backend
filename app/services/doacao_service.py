@@ -38,7 +38,14 @@ class DoacaoService(BaseService):
         return doacao
 
     # READ por ID
-    def get_by_id(self, doacao_id: int):
+    def get_by_id(self, doacao_id: int, usuario_id: int):
+        # usuario = self.usuario_manager.find_by_id(usuario_id)
+        # if not usuario:
+        #     raise ValueError("Usuário não encontrado")
+        
+        # doacao_doador = self.manager.find_first_by(id_doacao=doacao_id, doador_id=usuario_id)
+        # doacao_receptor = self.manager.find_first_by(id_doacao=doacao_id, receptor_id=usuario_id)
+        # doacao = doacao_doador or doacao_receptor
         doacao = self.manager.find_by_id(doacao_id)
         if not doacao:
             raise ValueError("Doação não encontrada")

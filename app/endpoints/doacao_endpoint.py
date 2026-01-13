@@ -1,5 +1,7 @@
 from flask import Blueprint, request, jsonify
 from app.services.doacao_service import DoacaoService
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from http import HTTPStatus
 
 doacao_bp = Blueprint("doacao", __name__, url_prefix="/doacao")
 service = DoacaoService()
@@ -16,12 +18,17 @@ def create_doacao():
 
 # READ por ID
 @doacao_bp.route("/<int:doacao_id>", methods=["GET"])
+@jwt_required()
 def get_doacao(doacao_id):
     try:
-        doacao = service.get_by_id(doacao_id)
+        usuario_id_str = get_jwt_identity()
+        usuario_id = int(usuario_id_str)
+        doacao = service.get_by_id(doacao_id,usuario_id)
         return jsonify(doacao.to_dict())
     except ValueError as e:
-        return jsonify({"error": str(e)}), 404
+        return jsonify({"error": str(e)}), HTTPStatus.NOT_FOUND
+    except Exception:
+        return jsonify({"error": "Erro interno ao buscar doação."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 # LIST com filtros opcionais
 @doacao_bp.route("/", methods=["GET"])
