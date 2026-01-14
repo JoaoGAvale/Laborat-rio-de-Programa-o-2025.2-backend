@@ -2,6 +2,8 @@ from app.services.base_service import BaseService
 from app.managers.doacao_manager import DoacaoManager
 from app.managers.usuario_manager import UsuarioManager
 from app.managers.unidade_manager import UnidadeManager
+from app.models.doacao_model import Doacao
+from app.models.usuario_model import Usuario
 
 class DoacaoService(BaseService):
     def __init__(self):
@@ -50,6 +52,46 @@ class DoacaoService(BaseService):
         if not doacao:
             raise ValueError("Doação não encontrada")
         return doacao
+    
+    def pagina_detalhes(self, doacao_id: int, usuario_id:int):
+        doacao : Doacao = self.manager.find_by_id(doacao_id)
+        if not doacao:
+            raise ValueError("Doação não encontrada")
+        doacao_formatada={
+            "id_doacao": doacao.id_doacao,
+            "doador": doacao.doador.nome if doacao.doador_id else "N/A",
+            "receptor": doacao.receptor.nome if doacao.receptor_id else "N/A",
+            "descricao": doacao.descricao,
+            "quantidade": doacao.quantidade,
+            "unidade": doacao.unidade.nome if doacao.unidade else "N/A",
+            "validade": doacao.validade.strftime("%Y-%m-%d") if doacao.validade else "N/A",
+            "data_cadastro": doacao.data_cadastro.strftime("%Y-%m-%d") if doacao.data_cadastro else "N/A",
+            "data_entrega": doacao.data_entrega.strftime("%Y-%m-%d") if doacao.data_entrega else "N/A",
+            "fotografia": "",
+            "status": doacao.status,
+            "confirmacao_entrega": doacao.confirmacao_entrega,
+            "confirmacao_recebimento": doacao.confirmacao_recebimento,
+            "endereco": {
+            "logradouro": doacao.endereco.logradouro if doacao.endereco_id else "N/A",
+            "numero": doacao.endereco.numero if doacao.endereco_id else "N/A",
+            "cep": doacao.endereco.cep if doacao.endereco_id else "N/A",
+            "cidade": doacao.endereco.cidade.nome if doacao.endereco_id and doacao.endereco.cidade_id else "N/A",
+            "estado": doacao.endereco.cidade.estado.nome if doacao.endereco_id and doacao.endereco.cidade_id and doacao.endereco.cidade.estado_id else "N/A",
+            },
+            "doador_info": {
+            "nome": doacao.doador.nome if doacao.doador_id else "N/A",
+            "telefone": "(11) 99999-9999",
+            "email": doacao.doador.email if doacao.doador_id else "N/A",
+            "endereco": "Rua das Flores, 123 - São Paulo/SP"
+            },
+            "receptor_info": {
+            "nome": doacao.receptor.nome if doacao.receptor_id else "N/A",
+            "telefone": "(11) 98888-8888",
+            "email": doacao.receptor.email if doacao.receptor_id else "N/A",
+            "endereco": "Av. Principal, 456 - São Paulo/SP"
+            }
+        }
+        return doacao_formatada
 
     # LIST com filtros opcionais
     def list(self, **filters):

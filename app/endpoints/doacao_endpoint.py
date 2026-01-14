@@ -23,11 +23,12 @@ def get_doacao(doacao_id):
     try:
         usuario_id_str = get_jwt_identity()
         usuario_id = int(usuario_id_str)
-        doacao = service.get_by_id(doacao_id,usuario_id)
-        return jsonify(doacao.to_dict())
+        doacao = service.pagina_detalhes(doacao_id,usuario_id)
+        return jsonify(doacao)
     except ValueError as e:
         return jsonify({"error": str(e)}), HTTPStatus.NOT_FOUND
-    except Exception:
+    except Exception as e:
+        print(e)
         return jsonify({"error": "Erro interno ao buscar doação."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 # LIST com filtros opcionais
