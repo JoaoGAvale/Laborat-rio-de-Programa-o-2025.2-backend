@@ -46,7 +46,8 @@ def login():
             )
 
         return response, HTTPStatus.OK
-    except Exception:
+    except Exception as e:
+        print(e)
         return jsonify({"error": "Erro interno ao realizar login."}), HTTPStatus.INTERNAL_SERVER_ERROR
 
 @auth_bp.get("/me")

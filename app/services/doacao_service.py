@@ -40,7 +40,7 @@ class DoacaoService(BaseService):
         return doacao
 
     # READ por ID
-    def get_by_id(self, doacao_id: int, usuario_id: int):
+    def get_by_id(self, doacao_id: int):
         # usuario = self.usuario_manager.find_by_id(usuario_id)
         # if not usuario:
         #     raise ValueError("Usuário não encontrado")
@@ -60,7 +60,9 @@ class DoacaoService(BaseService):
         doacao_formatada={
             "id_doacao": doacao.id_doacao,
             "doador": doacao.doador.nome if doacao.doador_id else "N/A",
+            "doador_id": doacao.doador_id if doacao.doador_id else None,
             "receptor": doacao.receptor.nome if doacao.receptor_id else "N/A",
+            "receptor_id": doacao.receptor_id if doacao.receptor_id else None,
             "descricao": doacao.descricao,
             "quantidade": doacao.quantidade,
             "unidade": doacao.unidade.nome if doacao.unidade else "N/A",

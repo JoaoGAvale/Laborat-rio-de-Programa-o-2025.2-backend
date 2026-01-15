@@ -40,13 +40,19 @@ def list_doacoes():
 
 # UPDATE por ID
 @doacao_bp.route("/<int:doacao_id>", methods=["PUT"])
+@jwt_required()
 def update_doacao(doacao_id):
     try:
+        usuario_id_str = get_jwt_identity()
+        usuario_id = int(usuario_id_str)
         data = request.get_json()
         doacao = service.update(doacao_id, data)
-        return jsonify(doacao.to_dict())
+        doacao = service.pagina_detalhes(doacao_id, usuario_id)
+        return jsonify(doacao)
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
+    
+    
 
 # DELETE por ID
 @doacao_bp.route("/<int:doacao_id>", methods=["DELETE"])
