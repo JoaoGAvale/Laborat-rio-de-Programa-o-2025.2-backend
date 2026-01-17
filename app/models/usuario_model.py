@@ -24,19 +24,21 @@ class Usuario(base_model.Base):
     perfil: Mapped[Optional[str]] = mapped_column(Enum('Doador', 'Receptor', 'Admin', name='Perfil'))
     email: Mapped[Optional[str]] = mapped_column(Text)
     password_hash: Mapped[Optional[str]] = mapped_column(Text)
+    telefone: Mapped[Optional[str]] = mapped_column(Text)
 
     endereco: Mapped[Optional['Endereco']] = relationship('Endereco')
     #Doacao: Mapped[list['Doacao']] = relationship('Doacao', foreign_keys='[Doacao.doador_id]', back_populates='doador')
     #Doacao_: Mapped[list['Doacao']] = relationship('Doacao', foreign_keys='[Doacao.receptor_id]', back_populates='receptor')
     #Notificacao: Mapped[list['Notificacao']] = relationship('Notificacao', back_populates='usuario')
 
-    def __init__(self, nome = None, cnpj = None, endereco_id = None, perfil=None, email = None):
+    def __init__(self, nome = None, cnpj = None, endereco_id = None, perfil=None, email = None, telefone = None):
         self.nome = nome
         self.cnpj = cnpj
         self.endereco_id = endereco_id
         self.perfil = perfil
         self.data_cadastro = datetime.datetime.now()
         self.email = email
+        self.telefone = telefone
 
     def __repr__(self):
         return f"<Usuario {self.id_usuario} - {self.nome}>"
@@ -50,7 +52,8 @@ class Usuario(base_model.Base):
             "perfil":self.perfil,
             "data_cadastro":self.data_cadastro,
             "email":self.email,
-            "password_hash":self.password_hash
+            "password_hash":self.password_hash,
+            "telefone": self.telefone
         }
     
     def set_password(self, password: str):
