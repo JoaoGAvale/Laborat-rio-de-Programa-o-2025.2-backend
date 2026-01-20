@@ -59,37 +59,37 @@ class DoacaoService(BaseService):
             raise ValueError("Doação não encontrada")
         doacao_formatada={
             "id_doacao": doacao.id_doacao,
-            "doador": doacao.doador.nome if doacao.doador_id else "N/A",
+            "doador": doacao.doador.nome if doacao.doador_id else "Não definido",
             "doador_id": doacao.doador_id if doacao.doador_id else None,
-            "receptor": doacao.receptor.nome if doacao.receptor_id else "N/A",
+            "receptor": doacao.receptor.nome if doacao.receptor_id else "Não definido",
             "receptor_id": doacao.receptor_id if doacao.receptor_id else None,
             "descricao": doacao.descricao,
             "quantidade": doacao.quantidade,
-            "unidade": doacao.unidade.nome if doacao.unidade else "N/A",
-            "validade": doacao.validade.strftime("%Y-%m-%d") if doacao.validade else "N/A",
-            "data_cadastro": doacao.data_cadastro.strftime("%Y-%m-%d") if doacao.data_cadastro else "N/A",
-            "data_entrega": doacao.data_entrega.strftime("%Y-%m-%d") if doacao.data_entrega else "N/A",
+            "unidade": doacao.unidade.nome if doacao.unidade else "Não definida",
+            "validade": doacao.validade.strftime("%d/%m/%Y") if doacao.validade else "Não definida",
+            "data_cadastro": doacao.data_cadastro.strftime("%d/%m/%Y") if doacao.data_cadastro else "Não definida",
+            "data_entrega": doacao.data_entrega.strftime("%d/%m/%Y") if doacao.data_entrega else "Não definida",
             "fotografia": "",
             "status": doacao.status,
             "confirmacao_entrega": doacao.confirmacao_entrega,
             "confirmacao_recebimento": doacao.confirmacao_recebimento,
             "endereco": {
-            "logradouro": doacao.endereco.logradouro if doacao.endereco_id else "N/A",
-            "numero": doacao.endereco.numero if doacao.endereco_id else "N/A",
-            "cep": doacao.endereco.cep if doacao.endereco_id else "N/A",
-            "cidade": doacao.endereco.cidade.nome if doacao.endereco_id and doacao.endereco.cidade_id else "N/A",
-            "estado": doacao.endereco.cidade.estado.nome if doacao.endereco_id and doacao.endereco.cidade_id and doacao.endereco.cidade.estado_id else "N/A",
+            "logradouro": doacao.endereco.logradouro if doacao.endereco_id else "Não definido",
+            "numero": doacao.endereco.numero if doacao.endereco_id else "Não definido",
+            "cep": doacao.endereco.cep if doacao.endereco_id else "Não definido",
+            "cidade": doacao.endereco.cidade.nome if doacao.endereco_id and doacao.endereco.cidade_id else "Não definida",
+            "estado": doacao.endereco.cidade.estado.nome if doacao.endereco_id and doacao.endereco.cidade_id and doacao.endereco.cidade.estado_id else "Não definido",
             },
             "doador_info": {
-            "nome": doacao.doador.nome if doacao.doador_id else "N/A",
+            "nome": doacao.doador.nome if doacao.doador_id else "Não definido",
             "telefone": "(11) 99999-9999",
-            "email": doacao.doador.email if doacao.doador_id else "N/A",
+            "email": doacao.doador.email if doacao.doador_id else "Não definido",
             "endereco": "Rua das Flores, 123 - São Paulo/SP"
             },
             "receptor_info": {
-            "nome": doacao.receptor.nome if doacao.receptor_id else "N/A",
+            "nome": doacao.receptor.nome if doacao.receptor_id else "Não definido",
             "telefone": "(11) 98888-8888",
-            "email": doacao.receptor.email if doacao.receptor_id else "N/A",
+            "email": doacao.receptor.email if doacao.receptor_id else "Não definido",
             "endereco": "Av. Principal, 456 - São Paulo/SP"
             }
         }
@@ -122,6 +122,9 @@ class DoacaoService(BaseService):
 
         return historico
     
+    def acompanhar_doacoes(self, usuario_id: int, perfil: str):
+        doacoes = self.manager.acompanhar_doacoes(usuario_id, perfil)
+        return doacoes
 
     def get_available_donations(self):
         return self.manager.find_all(status="Disponivel")

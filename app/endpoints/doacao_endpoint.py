@@ -1,10 +1,13 @@
+import datetime
 from flask import Blueprint, request, jsonify
 from app.services.doacao_service import DoacaoService
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from app.services.usuario_service import UsuarioService
 from http import HTTPStatus
 
 doacao_bp = Blueprint("doacao", __name__, url_prefix="/doacao")
 service = DoacaoService()
+usuario_service = UsuarioService()
 
 # CREATE
 @doacao_bp.route("/", methods=["POST"])
@@ -47,12 +50,26 @@ def update_doacao(doacao_id):
         usuario_id = int(usuario_id_str)
         data = request.get_json()
         doacao = service.update(doacao_id, data)
+        if doacao.confirmacao_entrega and doacao.confirmacao_recebimento:
+            doacao = service.update(doacao_id, {"status": "Finalizada", "data_entrega": datetime.datetime.now()})
+            
         doacao = service.pagina_detalhes(doacao_id, usuario_id)
         return jsonify(doacao)
     except ValueError as e:
         return jsonify({"error": str(e)}), 404
-    
-    
+        
+@doacao_bp.route("/acompanhar", methods=["GET"])
+@jwt_required()
+def acompanhar_doacoes():
+    try:
+        usuario_id_str = get_jwt_identity()
+        usuario_id = int(usuario_id_str)
+        usuario = usuario_service.get_by_id(usuario_id)
+        doacoes = service.acompanhar_doacoes(usuario_id, usuario.perfil)
+
+        return jsonify([d.to_dict() for d in doacoes])
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 404    
 
 # DELETE por ID
 @doacao_bp.route("/<int:doacao_id>", methods=["DELETE"])

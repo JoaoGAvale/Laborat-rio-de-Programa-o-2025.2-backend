@@ -57,18 +57,19 @@ class Doacao(base_model.Base):
         return {
             "id_doacao":self.id_doacao,
             "doador_id":self.doador_id,
-            "doador_id":self.doador_id,
+            "doador":self.doador.nome if self.doador else "N/A",
             "receptor_id":self.receptor_id,
+            "receptor":self.receptor.nome if self.receptor else "N/A",
             "descricao":self.descricao,
             "quantidade":self.quantidade,
             "unidade_id":self.unidade_id,
             "unidade": self.unidade.nome if self.unidade else "N/A",
-            "validade":self.validade,
+            "validade":self.validade.strftime("%d/%m/%Y") if self.validade else None,
             "endereco_id":self.endereco_id,
             "status":self.status,
-            "data_cadastro":self.data_cadastro,
+            "data_cadastro":self.data_cadastro.strftime("%d/%m/%Y") if self.data_cadastro else None,
             "doador": self.doador.nome if self.doador else "Desconhecido",
             "confirmacao_entrega":self.confirmacao_entrega,
             "confirmacao_recebimento":self.confirmacao_recebimento,
-            "data_entrega":self.data_entrega
+            "data_entrega":self.data_entrega.strftime("%d/%m/%Y") if self.data_entrega else None
         }

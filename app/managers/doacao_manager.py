@@ -1,7 +1,7 @@
 from app.managers.base_manager import BaseManager
 from app.models.doacao_model import Doacao
 from app import db  
-from sqlalchemy import or_  
+from sqlalchemy import or_ , and_
 
 class DoacaoManager(BaseManager):
     model = Doacao
@@ -23,3 +23,14 @@ class DoacaoManager(BaseManager):
                 self.model.receptor_id == user_id
             )
         ).filter(self.model.status == status).all()
+    
+    def acompanhar_doacoes(self, usuario_id: int, perfil: str):
+
+        query = db.session.query(Doacao).filter(
+            or_(
+                and_(Doacao.doador_id == usuario_id, perfil == "Doador", Doacao.status != "Finalizada"),
+                and_(Doacao.receptor_id == usuario_id, perfil == "Receptor", Doacao.status == "Reservada")
+            )
+        )
+
+        return query.all()
